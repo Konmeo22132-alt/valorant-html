@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "tickRate": 30,
+  "snapshotRate": 20,
+  "interpolationMs": 100,
+  "inputTimeoutMs": 300,
+  "reconnectGraceMs": 30000,
+  "loadingTimeoutMs": 120000,
+  "maxRooms": 12,
+  "maxConnections": 128,
+  "maxMessageBytes": 8192,
+  "maxBufferedBytes": 262144,
+  "messagesPerSecond": 100,
+  "maxCatchupSteps": 3
+}

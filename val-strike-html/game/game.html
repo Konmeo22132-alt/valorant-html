@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi" class="assets-pending">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/asset-preloader.css?v=42">
+  <script src="/js/asset-preloader.js?v=64"></script>
+  <link rel="icon" href="data:,">
+  <title>VAL STRIKE — Trận đấu</title>
+  <link rel="stylesheet" href="../css/variables.css?v=11">
+  <link rel="stylesheet" href="../css/components.css?v=11">
+  <link rel="stylesheet" href="agent-ui.css?v=38">
+  <link rel="stylesheet" href="match-ui.css?v=28">
+  <link rel="stylesheet" href="native-ui.css?v=42">
+  <link rel="stylesheet" href="entry-flow.css?v=53">
+  <link rel="stylesheet" href="../css/chat.css?v=57">
+  <link rel="stylesheet" href="mobile-ui.css?v=2">
+  <style>
+    body { overflow: hidden; }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="renderCanvas"></canvas>
+    <div id="loading-overlay" style="display:none">
+      <section class="pause-card">
+        <div class="pause-eyebrow">TRẬN ĐẤU</div><h1>TẠM DỪNG</h1>
+        <div class="pause-actions"><button id="play-fullscreen" type="button">TIẾP TỤC CHƠI</button><button id="practice-refill" type="button" hidden>NẠP ĐẦY KỸ NĂNG</button><button id="return-lobby" type="button">TRỞ VỀ SẢNH</button><button id="rematch-room" type="button" hidden>CHƠI TIẾP Ở PHÒNG NÀY</button></div>
+        <p id="loading-text"></p><p id="controls-status"></p>
+      </section>
+      <div hidden aria-hidden="true"><button id="initialize-game" disabled></button><button id="respawn-player" disabled></button><select id="range-weapon" disabled></select><select id="playable-agent"><option>Clove</option><option>Jett</option><option>Sage</option></select><div id="agent-practice"></div></div>
+    </div>
+    <div id="mobile-hud" hidden aria-label="Điều khiển Mobile Mode">
+      <div id="mobile-joystick-zone" class="mobile-touch-zone" data-mobile-layout-id="joystick"><span id="mobile-joystick-stick"></span></div>
+      <div id="mobile-look-zone" aria-hidden="true"></div>
+      <div class="mobile-fire mobile-fire-left" data-mobile-fire="left" data-mobile-layout-id="fire-left">BẮN</div>
+      <div class="mobile-fire mobile-fire-right" data-mobile-fire="right" data-mobile-layout-id="fire-right">BẮN</div>
+      <div id="mobile-actions" data-mobile-layout-id="actions">
+        <button type="button" data-mobile-action="ads">ADS</button>
+        <button type="button" data-mobile-action="reload">R</button>
+        <button type="button" data-mobile-action="jump">NHẢY</button>
+        <button type="button" data-mobile-action="crouch">NGỒI</button>
+        <button type="button" data-mobile-action="walk">ĐI</button>
+      </div>
+      <div id="mobile-abilities" data-mobile-layout-id="abilities">
+        <button type="button" data-mobile-ability="C">C</button>
+        <button type="button" data-mobile-ability="Q">Q</button>
+        <button type="button" data-mobile-ability="E">E</button>
+        <button type="button" data-mobile-ability="X">X</button>
+      </div>
+      <div id="mobile-weapons" data-mobile-layout-id="weapons">
+        <button type="button" data-mobile-weapon="primary">SÚNG</button>
+        <button type="button" data-mobile-weapon="secondary">PISTOL</button>
+        <button type="button" data-mobile-weapon="melee">DAO</button>
+      </div>
+      <button id="mobile-ping" type="button" data-mobile-layout-id="ping">PING</button>
+      <button id="mobile-layout-toggle" type="button">LAYOUT</button>
+      <section id="mobile-layout-editor" hidden aria-label="Chỉnh layout mobile">
+        <header><strong>LAYOUT MOBILE</strong><button type="button" data-mobile-editor="close">XONG</button></header>
+        <label>Preset <select id="mobile-layout-preset"><option value="2finger">2 ngón</option><option value="3finger">3 ngón</option><option value="4finger">4 ngón</option></select></label>
+        <label>Kích thước <input id="mobile-layout-scale" type="range" min=".65" max="1.6" step=".05" value="1"></label>
+        <button type="button" data-mobile-editor="reset">ĐẶT LẠI</button>
+        <button type="button" data-mobile-editor="save">LƯU VÀO TÀI KHOẢN</button>
+        <p id="mobile-layout-status">Kéo các nhóm nút để di chuyển.</p>
+      </section>
+    </div>
+  </div>
+
+  <footer class="legal">
+    <p>Val-Strike HTML is a non-profit fan-made portfolio project. All Valorant assets belong to Riot Games.
+       Not affiliated with or endorsed by Riot Games.
+       Created under <a href="https://www.riotgames.com/vi/legal" target="_blank" rel="noopener">Riot Games' Legal Jibber Jabber policy</a>.</p>
+  </footer>
+
+  <script src="../assets/vendor/babylon.js?v=8.32.0"></script>
+  <script src="../assets/vendor/babylonjs.loaders.min.js?v=8.32.0"></script>
+  <script src="neon-fast-lane.js?v=1"></script>
+  <script src="../js/state.js?v=64"></script>
+  <script src="../js/profile.js?v=64"></script>
+  <script src="../js/agents.js?v=64"></script>
+  <script src="../js/agent-viewer.js?v=64"></script>
+  <script src="../js/network.js?v=64"></script>
+  <script src="../js/chat.js?v=64"></script>
+  <script src="maps.js?v=64"></script>
+  <script src="config-loader.js?v=64"></script>
+  <script src="collision-world.js?v=64"></script>
+  <script src="map-presentation.js?v=64"></script>
+  <script src="map-streamer.js?v=64"></script>
+  <script src="performance-runtime.js?v=64"></script>
+  <script src="engine.js?v=64"></script>
+  <script src="actor-motion.js?v=64"></script>
+  <script src="net-motion.js?v=64"></script>
+  <script src="player.js?v=64"></script>
+  <script src="ui-overlay.js?v=64"></script>
+  <script src="hud-map.js?v=64"></script>
+  <script src="combat-ui.js?v=64"></script>
+  <script src="shop-ui.js?v=64"></script>
+  <script src="weapon-models.js?v=64"></script>
+  <script src="weapons.js?v=64"></script>
+  <script src="range.js?v=64"></script>
+  <script src="weapon-extras.js?v=64"></script>
+  <script src="body-presentation.js?v=64"></script>
+  <script src="agent-visuals.js?v=64"></script>
+  <script src="agent-effects.js?v=64"></script>
+  <script src="agent-skill-layers.js?v=64"></script>
+  <script src="agent-clove.js?v=64"></script>
+  <script src="agent-abilities.js?v=64"></script>
+  <script src="match-rules.js?v=64"></script>
+  <script src="bot-navigation.js?v=64"></script>
+  <script src="match-abilities.js?v=64"></script>
+  <script src="match-layout.js?v=64"></script>
+  <script src="match-animation.js?v=64"></script>
+  <script src="match-bots.js?v=64"></script>
+  <script src="match-ui.js?v=64"></script>
+  <script src="match-runtime.js?v=64"></script>
+  <script src="multiplayer.js?v=64"></script>
+  <script src="entry-flow.js?v=64"></script>
+  <script src="mobile-controls.js?v=2"></script>
+  <script>
+    document.getElementById('return-lobby').onclick=()=>{if(typeof netMatch!=='undefined')netMatch.client?.leave();location.assign('/play');};
+    document.getElementById('rematch-room').onclick=()=>netCommand('rematch');
+  </script>
+</body>
+</html>

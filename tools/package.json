@@ -1,0 +1,42 @@
+{
+  "name": "val-strike-asset-tools",
+  "private": true,
+  "scripts": {
+    "start": "node ../server/server.cjs",
+    "test:multiplayer": "node --max-old-space-size=192 test-multiplayer.cjs",
+    "test:multiplayer:skills": "node --max-old-space-size=192 test-network-skills.cjs",
+    "test:multiplayer:client": "node --max-old-space-size=192 test-multiplayer-client.cjs",
+    "test:menu": "node --max-old-space-size=192 test-menu.cjs",
+    "map:stream": "node --max-old-space-size=512 build-map-stream.cjs",
+    "test:map:stream": "node --max-old-space-size=256 test-map-stream.cjs",
+    "test:map:startup": "node --max-old-space-size=192 test-map-startup.cjs",
+    "map:lite": "node --max-old-space-size=512 build-map-lite.cjs",
+    "test:controls": "node --max-old-space-size=256 test-ingame.cjs",
+    "test:range": "node --max-old-space-size=192 test-range.cjs",
+    "test:extras": "node --max-old-space-size=192 test-weapon-extras.cjs",
+    "test:framing": "node --max-old-space-size=192 test-viewmodel-framing.cjs",
+    "test:assets": "node --max-old-space-size=192 validate-weapon-assets.cjs",
+    "test:viewmodels": "node --max-old-space-size=192 test-viewmodels.cjs",
+    "test:map": "node --max-old-space-size=256 test-map-stream.cjs",
+    "test:map:lite": "node --max-old-space-size=192 test-map-lite.cjs",
+    "test:startup": "node --max-old-space-size=192 test-startup.cjs",
+    "test:fly": "node --max-old-space-size=192 test-fly.cjs",
+    "test:match:rules": "node test-match-rules.cjs",
+    "test:ui": "node --max-old-space-size=192 test-native-ui.cjs",
+    "test:match:runtime": "node --max-old-space-size=384 test-match-runtime.cjs",
+    "match:nav": "node --max-old-space-size=384 build-match-navigation.cjs",
+    "test:browser": "node --max-old-space-size=192 test-browser.cjs range",
+    "test:browser:guns": "node --max-old-space-size=192 test-browser.cjs guns",
+    "test:browser:abyss": "node --max-old-space-size=192 test-browser.cjs abyss"
+  },
+  "dependencies": {
+    "babylonjs": "8.32.0",
+    "babylonjs-loaders": "8.32.0",
+    "draco3d": "1.5.7",
+    "meshoptimizer": "1.3.0",
+    "ws": "8.22.0"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  }
+}

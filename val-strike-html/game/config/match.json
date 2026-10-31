@@ -1,0 +1,46 @@
+{
+  "teamSize": 5,
+  "maxAgentCopiesPerTeam": 2,
+  "playableRoster": [
+    "Clove",
+    "Jett",
+    "Sage"
+  ],
+  "deathmatch": {
+    "duration": 600000,
+    "killLimit": 40,
+    "respawnDelay": 2500
+  },
+  "navigation": {
+    "spacing": 0.6,
+    "maxNodes": 32000,
+    "maxEdgeRise": 0.65
+  },
+  "bots": {
+    "thinkInterval": 180,
+    "reactionTime": 350,
+    "sightRange": 45,
+    "aimSpread": 2.2,
+    "repathInterval": 1600,
+    "stuckTimeout": 1500,
+    "stuckDistance": 0.25,
+    "blockedEdgeDuration": 12000,
+    "combatReposition": 2300,
+    "crouchBurstDuration": 650,
+    "sitePatrolRadius": 5,
+    "abilities": {
+      "decisionInterval": 500,
+      "smokeInterval": 8000,
+      "projectileRange": 25,
+      "pickupHealth": 90,
+      "healHealth": 85,
+      "smokeHealth": 70,
+      "dashHealth": 75,
+      "updraftRise": 0.7
+    }
+  },
+  "interactionRange": 2.5,
+  "siteRadius": 4,
+  "orbDuration": 1000,
+  "selectionDuration": 90000
+}

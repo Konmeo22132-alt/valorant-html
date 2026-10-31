@@ -1,0 +1,66 @@
+<div class="hud screen-enter">
+  <div class="hud-top-center">
+    <span class="score-a" id="score-a">5</span>
+    <span class="hud-timer" id="hud-timer">1:40</span>
+    <span>ROUND 7</span>
+    <span class="score-b" id="score-b">4</span>
+  </div>
+
+  <div class="minimap" id="minimap">MINIMAP — chờ map GLB + config điểm neo</div>
+
+  <div class="teammates">
+    <div class="teammate"><span>P2</span><div class="hp-bar"><div class="hp-fill" style="width:80%"></div></div><span>80</span></div>
+    <div class="teammate"><span>P3</span><div class="hp-bar"><div class="hp-fill" style="width:45%"></div></div><span>45</span></div>
+    <div class="teammate"><span>P4</span><div class="hp-bar"><div class="hp-fill" style="width:100%;background:#666"></div></div><span>✕</span></div>
+  </div>
+
+  <div class="killfeed">
+    <div class="kill-entry"><span class="k">YOU</span> ⟶ <span class="v">Enemy1</span></div>
+    <div class="kill-entry"><span class="k">P2</span> ⟶ <span class="v">Enemy2</span></div>
+  </div>
+
+  <div class="crosshair"><span></span></div>
+
+  <div class="hud-bottom-left">
+    <div class="hp-line">
+      <span class="hp-big" id="hp-value">100</span>
+      <div class="hp-track"><div class="fill" id="hp-fill" style="width:100%"></div></div>
+    </div>
+    <div class="hp-line armor-track">
+      <span style="font-size:14px;opacity:.7">ARMOR</span>
+      <div class="hp-track" style="width:130px"><div class="fill" style="width:50%"></div></div>
+      <span style="font-size:14px">50</span>
+    </div>
+  </div>
+
+  <div class="abilities">
+    <div class="ability-slot">C<div class="ability-ring" style="--pct:100"></div></div>
+    <div class="ability-slot">Q<div class="ability-ring" style="--pct:60"></div></div>
+    <div class="ability-slot">E<div class="ability-ring" style="--pct:0"></div></div>
+    <div class="ability-slot ult">X<div class="ability-ring" style="--pct:35"></div></div>
+  </div>
+
+  <div class="hud-bottom-right">
+    <div class="ammo-line"><span id="ammo-clip">25</span> <span class="ammo-reserve">| <span id="ammo-reserve">100</span></span></div>
+    <div style="font-size:14px;letter-spacing:.1em" id="hud-weapon">VANDAL</div>
+    <div class="credits-hud">4700 cR</div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('hud-weapon').textContent = (VS.player.weapon || 'VANDAL').toUpperCase();
+  document.getElementById('ammo-clip').textContent = VS.player.ammo.clip;
+  document.getElementById('ammo-reserve').textContent = VS.player.ammo.reserve;
+  document.getElementById('score-a').textContent = VS.round.score.a;
+  document.getElementById('score-b').textContent = VS.round.score.b;
+  document.getElementById('hud-timer').textContent =
+    Math.floor(VS.round.timeLeft / 60) + ':' + String(VS.round.timeLeft % 60).padStart(2, '0');
+
+  // Preview: nhấn B mở buy menu (trong game thật là ui-overlay.js điều khiển)
+  document.addEventListener('keydown', function onKey(e) {
+    if (e.code === 'KeyB') {
+      document.removeEventListener('keydown', onKey);
+      VS.navigate('/buy');
+    }
+  });
+</script>

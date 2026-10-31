@@ -1,0 +1,21 @@
+#agent-hud {position:absolute;bottom:88px;left:50%;transform:translateX(-50%);color:#eef7f5;font:11px sans-serif;pointer-events:none;width:min(570px,92vw);text-align:center;z-index:4}
+.agent-hud-name {text-shadow:0 1px 3px black;margin-bottom:6px;letter-spacing:.08em}
+.agent-slots {display:flex;justify-content:center;gap:8px}
+.agent-slot {width:91px;padding:6px 3px;background:#102029d9;border-bottom:2px solid #698a8d;position:relative}
+.agent-slot img {width:31px;height:31px;object-fit:contain;display:block;margin:0 auto 3px}
+.agent-slot .agent-key {position:absolute;top:5px;left:7px;color:#b9c8c7}
+.agent-slot .agent-charge {position:absolute;top:5px;right:6px;font-size:12px;font-weight:bold}
+.agent-slot.empty {opacity:.45}.agent-slot.active {border-color:#7bf3cf;background:#23594ce6}.agent-slot.ready {border-color:#ecdc91}
+.agent-slot-name {font-size:10px;white-space:nowrap}.agent-slot-cooldown {color:#e6cc8c;min-height:12px}
+.agent-hud-detail {margin-top:7px;min-height:15px;text-shadow:0 1px 3px #000,0 0 4px #000;line-height:1.5}
+#clove-death-prompt{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:12;display:grid;justify-items:center;gap:7px;min-width:290px;padding:14px 24px;color:#fff;text-align:center;background:linear-gradient(90deg,transparent,#161322a8 18%,#161322d9 50%,#161322a8 82%,transparent);pointer-events:none;text-shadow:0 2px 5px #140c19;font-family:var(--game-font,sans-serif)}
+#clove-death-prompt[hidden]{display:none!important}.clove-prompt-ring{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;position:relative;background:conic-gradient(#55ebcf var(--clove-window-angle,360deg),#e9d9fa35 0);filter:drop-shadow(0 0 12px #ca8cff88)}
+.clove-prompt-ring:before{content:'';position:absolute;inset:4px;border-radius:50%;background:#1a1727eb;border:1px solid #e7d7f8a8}.clove-prompt-ring img{position:relative;width:37px;height:37px;object-fit:contain;filter:drop-shadow(0 0 8px #d2a2ff)}.clove-prompt-ring span{position:absolute;right:-4px;bottom:-3px;min-width:22px;height:22px;padding:0 4px;display:grid;place-items:center;border-radius:12px;background:#ece5f3;color:#251c30;font-size:12px;font-weight:800;text-shadow:none}
+.clove-prompt-title{font-size:16px;font-weight:800;letter-spacing:.11em;color:#ecdafa}.clove-prompt-detail{font-size:12px;line-height:1.5;color:#f0edf5}.clove-prompt-ring img{animation:clove-soul-breathe 1.15s ease-in-out infinite alternate}#clove-death-prompt.success .clove-prompt-title{color:#8fffe6}#clove-death-prompt.success .clove-prompt-ring{background:conic-gradient(#6cf7d4 var(--clove-window-angle,360deg),#e9d9fa35 0)}#clove-death-prompt.casting .clove-prompt-ring img{opacity:.55;animation:none}
+@keyframes clove-soul-breathe{from{transform:scale(.9);opacity:.74}to{transform:scale(1.04);opacity:1}}
+#agent-smoke-map {position:absolute;inset:0;color:#eee6ff;text-align:center;z-index:8;pointer-events:none;font:12px sans-serif}
+#agent-smoke-map[hidden] {display:none}#agent-smoke-map p {margin:10px 0}#agent-map-status {margin-top:8px;color:#d5b3ed}
+#agent-map-canvas {position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:crosshair;touch-action:none;pointer-events:auto}
+.ruse-controls{position:absolute;bottom:25%;left:50%;transform:translateX(-50%);width:max-content;max-width:90%;text-shadow:0 1px 4px #171027;pointer-events:none}
+#agent-screen-effect {position:absolute;inset:0;pointer-events:none;z-index:2;opacity:0;box-shadow:inset 0 0 65px 18px var(--agent-cue-color,#8cebd7)}
+@media(max-height:560px) {#agent-hud{bottom:66px}.agent-slot{padding:3px}.agent-slot img{width:23px;height:23px}}

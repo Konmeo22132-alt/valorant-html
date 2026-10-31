@@ -1,0 +1,18 @@
+{
+  "maxFPS": 240,
+  "maxRenderWidth": 1920,
+  "maxRenderHeight": 1080,
+  "mapContactShadows": true,
+  "maxBulletHoles": 24,
+  "bulletHoleLifetime": 8000,
+  "mapResidentMB": 80,
+  "mapNearRadius": 5,
+  "mapInitialRadius": 12,
+  "mapInitialTimeout": 30000,
+  "mapInitialRetries": 3,
+  "mapRequestTimeout": 10000,
+  "mapRetryDelay": 1000,
+  "mapPrefetchAngle": 0.6,
+  "mapRetainTime": 6000,
+  "mapUpdateInterval": 100
+}

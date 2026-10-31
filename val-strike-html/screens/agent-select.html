@@ -1,0 +1,119 @@
+<div class="screen screen-enter">
+  <header class="select-header">
+    <span>AGENT SELECTION</span>
+    <span class="select-timer" id="select-timer">1:30</span>
+    <span style="color:var(--val-red)">●</span>
+  </header>
+
+  <main class="select-body">
+    <div class="team-col">
+      <h3>YOUR TEAM</h3>
+      <div class="slot me" id="my-slot">YOU — pick an agent</div>
+      <div class="slot">Slot 2</div>
+      <div class="slot">Slot 3</div>
+      <div class="slot">Slot 4</div>
+      <div class="slot">Slot 5</div>
+    </div>
+
+    <div class="select-center">
+      <canvas id="select-agent-canvas" style="width:100%;height:260px;outline:none;"></canvas>
+      <div class="selected-agent-name" id="selected-name" style="font-size:32px">SELECT</div>
+      <div class="selected-agent-role" id="selected-role">CHOOSE AN AGENT BELOW</div>
+      <div class="agent-grid" id="agent-grid"></div>
+      <div class="role-filter" id="role-filter">
+        <button class="active" data-role="all">ALL</button>
+        <button data-role="duelist">DUELIST</button>
+        <button data-role="initiator">INITIATOR</button>
+        <button data-role="controller">CONTROLLER</button>
+        <button data-role="sentinel">SENTINEL</button>
+      </div>
+      <button class="btn-val" id="lockin-btn" disabled>LOCK IN</button>
+      <a id="play-selected-agent" style="display:none" class="btn-val">CHƠI SHOOTING RANGE</a>
+    </div>
+
+    <div class="team-col">
+      <h3>ENEMY TEAM</h3>
+      <div class="slot">Slot 1</div>
+      <div class="slot">Slot 2</div>
+      <div class="slot">Slot 3</div>
+      <div class="slot">Slot 4</div>
+      <div class="slot">Slot 5</div>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Placeholder roster — sẽ thay bằng portrait icon khi có assets
+  const AGENTS = window.VS_AGENTS.filter(a => a.available).map(a => [a.name, a.role, a.file]);
+
+  const grid = document.getElementById('agent-grid');
+  const filterBar = document.getElementById('role-filter');
+  let activeRole = 'all';
+  let pickedAgent = null;
+  const takenByTeam = new Set();
+
+  function renderGrid() {
+    grid.innerHTML = '';
+    AGENTS
+      .filter(([name, role]) => activeRole === 'all' || role === activeRole)
+      .forEach(([name, role, file]) => {
+        const card = document.createElement('div');
+        card.className = 'agent-card' + (takenByTeam.has(name) ? ' picked' : '');
+        card.innerHTML = '<div class="a-name">' + name + '</div><div class="a-role">' + role + '</div>';
+        card.addEventListener('click', () => selectAgent(name, role, file));
+        grid.appendChild(card);
+      });
+  }
+
+  let viewer = null;
+  function selectAgent(name, role, file) {
+    pickedAgent = { name, role, file };
+    if (window.VSAgentViewer) {
+      if (!viewer) viewer = VSAgentViewer(document.getElementById('select-agent-canvas'), file);
+      else viewer.load(file);
+    }
+    document.getElementById('selected-name').textContent = name.toUpperCase();
+    document.getElementById('selected-role').textContent = role.toUpperCase();
+    document.getElementById('lockin-btn').disabled = takenByTeam.has(name);
+  }
+
+  filterBar.addEventListener('click', (e) => {
+    if (e.target.tagName !== 'BUTTON') return;
+    filterBar.querySelectorAll('button').forEach((b) => b.classList.remove('active'));
+    e.target.classList.add('active');
+    activeRole = e.target.dataset.role;
+    renderGrid();
+  });
+
+  document.getElementById('lockin-btn').addEventListener('click', () => {
+    if (!pickedAgent) return;
+    takenByTeam.add(pickedAgent.name);
+    VS.player.agent = pickedAgent.name;
+    VSProfile.save({agent:pickedAgent.name});
+    document.getElementById('my-slot').textContent = 'YOU — ' + pickedAgent.name.toUpperCase();
+    document.getElementById('lockin-btn').textContent = 'LOCKED ✓';
+    document.getElementById('lockin-btn').disabled = true;
+    const playable = window.VS_AGENTS.find(agent => agent.name === pickedAgent.name)?.playable;
+    const playLink = document.getElementById('play-selected-agent');
+    playLink.hidden = !playable;
+    playLink.style.display = playable ? 'inline-flex' : 'none';
+    playLink.href = 'game/game.html?map=range&agent=' + encodeURIComponent(pickedAgent.name);
+    renderGrid();
+  });
+
+  // Countdown 60s — đỏ khi < 10s
+  let secondsLeft = 90;
+  const timerEl = document.getElementById('select-timer');
+  const timerId = setInterval(() => {
+    secondsLeft--;
+    timerEl.textContent = Math.floor(secondsLeft / 60) + ':' + String(secondsLeft % 60).padStart(2, '0');
+    if (secondsLeft <= 10) timerEl.classList.add('warning');
+    if (secondsLeft <= 0) {
+      clearInterval(timerId);
+      timerEl.textContent = '0:00';
+    }
+  }, 1000);
+  timerEl.textContent = '1:30';
+
+  renderGrid();
+</script>

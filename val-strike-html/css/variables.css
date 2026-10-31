@@ -1,0 +1,41 @@
+/* ============================================================
+   Val-Strike HTML — Design System Variables
+   Màu sắc theo chuẩn Valorant UI hiện tại
+   ============================================================ */
+
+@font-face {
+  font-family: 'VALORANT';
+  src: url('../assets/fonts/Valorant Font.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Màu chính xác Valorant */
+  --val-red:        #FF4655;
+  --val-red-dark:   #BD3944;
+  --val-white:      #ECE8E1;
+  --val-off-white:  #C4B8A4;
+  --val-black:      #0F1923;
+  --val-dark:       #1C2A35;
+  --val-mid:        #243544;
+  --val-panel:      rgba(15, 25, 35, 0.95);
+  --val-green:      #00FFA3;
+  --val-gold:       #E8C979;
+
+  /* Fonts */
+  --font-title: 'VALORANT', 'Impact', 'Arial Black', sans-serif;
+  --font-body:  'Arial Narrow', 'Noto Sans', 'Segoe UI', sans-serif;
+
+  /* Clip-paths đặc trưng Valorant */
+  --clip-br:     polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+  --clip-bl:     polygon(12px 0, 100% 0, 100% 100%, 0 100%, 0 12px);
+  --clip-btn:    polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  --clip-card:   polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+  --clip-notch:  polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+
+  /* Kích thước */
+  --topbar-h: 56px;
+  --bottombar-h: 64px;
+}

@@ -1,0 +1,42 @@
+/* ============================================================
+   Val-Strike HTML — Animations
+   ============================================================ */
+
+@keyframes fadeFromBlack {
+  from { opacity: 0; background: #000; }
+  to   { opacity: 1; }
+}
+.screen-enter { animation: fadeFromBlack 0.3s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(40px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; }
+}
+
+@keyframes bannerDrop {
+  0%   { transform: translateY(-60px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+@keyframes bannerHold { from { opacity: 1; } to { opacity: 1; } }
+@keyframes bannerRise {
+  to { transform: translateY(-60px); opacity: 0; }
+}
+.round-banner {
+  animation: bannerDrop 0.3s ease,
+             bannerHold 2s 0.3s,
+             bannerRise 0.3s 2.3s ease forwards;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}

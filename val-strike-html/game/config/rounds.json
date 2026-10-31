@@ -1,0 +1,20 @@
+{
+  "_comment": "Round timings Unrated — valorant.fandom.com/wiki/Unrated",
+  "matchWinRounds": 13,
+  "halfRounds": 12,
+  "buyPhaseFirst": 45000,
+  "buyPhase": 30000,
+  "roundTime": 100000,
+  "spikeTimer": 45000,
+  "plantDuration": 4000,
+  "defuseDuration": 7000,
+  "defuseCheckpoint": 3500,
+  "postRound": 7000,
+  "barrierDropAtRoundStart": true,
+  "spikeBeeps": { "fast": 20000, "faster": 10000, "orb": 7000 },
+  "overtime": {
+    "setRounds": 2,
+    "credits": 5000,
+    "ultPointsToMissing3": true
+  }
+}

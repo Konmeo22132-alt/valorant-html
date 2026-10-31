@@ -1,0 +1,15 @@
+{
+  "_comment": "Economy Unrated — wiki.playvalorant.com/Credits",
+  "roundStart": 800,
+  "winRound": 3000,
+  "lossStreak": [1900, 2400, 2900],
+  "killReward": 200,
+  "plantTeamReward": 300,
+  "survivedLossReward": 1000,
+  "maxCredits": 9000,
+  "sellRefundPct": 1.0,
+  "deathLossWeapons": true,
+  "ultPoints": {
+    "kill": 1, "died": 1, "plant": 1, "defuse": 1, "orb": 1
+  }
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Agent Anim Test</title>
+  <link rel="stylesheet" href="../css/variables.css?v=10">
+  <style>
+    body { margin: 0; overflow: hidden; background: #0F1923; }
+    #anim-bar {
+      position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 8px; flex-wrap: wrap; z-index: 10;
+    }
+    #anim-bar button {
+      background: rgba(15,25,35,0.9); color: #ECE8E1; border: 1px solid #243544;
+      padding: 8px 16px; cursor: pointer; font-family: Impact, sans-serif;
+      letter-spacing: 0.1em; font-size: 12px;
+    }
+    #anim-bar button.active { background: #FF4655; border-color: #FF4655; }
+  </style>
+</head>
+<body>
+  <canvas id="c" style="width:100vw;height:100vh;touch-action:none;"></canvas>
+  <div id="anim-bar"></div>
+  <script src="https://cdn.babylonjs.com/babylon.js?v=10"></script>
+  <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js?v=10"></script>
+  <script>
+    const canvas = document.getElementById('c');
+    const engine = new BABYLON.Engine(canvas, true);
+    const scene = new BABYLON.Scene(engine);
+    scene.clearColor = new BABYLON.Color4(0.06, 0.1, 0.14, 1);
+    const cam = new BABYLON.ArcRotateCamera('cam', Math.PI/2, 1.25, 3.2, new BABYLON.Vector3(0, 0.95, 0), scene);
+    cam.attachControl(canvas, true);
+    new BABYLON.HemisphericLight('h', new BABYLON.Vector3(0, 1, 0), scene).intensity = 0.9;
+    const sun = new BABYLON.DirectionalLight('s', new BABYLON.Vector3(-0.5, -1, 0.3), scene);
+    sun.intensity = 0.7;
+    // sàn phản chiếu nhẹ để nhìn rõ
+    const ground = BABYLON.MeshBuilder.CreateGround('g', { width: 6, height: 6 }, scene);
+    const gm = new BABYLON.StandardMaterial('gm', scene);
+    gm.diffuseColor = new BABYLON.Color3(0.15, 0.18, 0.22);
+    ground.material = gm;
+
+    const bar = document.getElementById('anim-bar');
+    let groups = [];
+
+    function play(name) {
+      groups.forEach(g => g.stop());
+      const g = groups.find(g => g.name === name);
+      if (g) { g.reset(); g.start(true, 1.0); }
+      bar.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.textContent === name));
+      window.__currentAnim = name;
+    }
+
+    BABYLON.SceneLoader.ImportMesh('', '/assets/agents/', 'breach.glb', scene, (meshes, ps, skeletons, animGroups) => {
+      meshes.forEach(m => { m.alwaysSelectAsActiveMesh = true; });
+      groups = animGroups || [];
+      // đổi tên group cho gọn
+      groups.forEach(g => { g.name = g.name.replace(/^TP_\w+_\w+_Face_/, ''); });
+      groups.forEach(g => {
+        const b = document.createElement('button');
+        b.textContent = g.name;
+        b.onclick = () => play(g.name);
+        bar.appendChild(b);
+      });
+      window.__anims = groups.map(g => g.name);
+      play(groups.find(g => /Idle/i.test(g.name))?.name || groups[0]?.name);
+    });
+
+    engine.runRenderLoop(() => scene.render());
+    window.addEventListener('resize', () => engine.resize());
+  </script>
+</body>
+</html>

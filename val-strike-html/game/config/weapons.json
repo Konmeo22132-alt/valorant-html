@@ -1,0 +1,191 @@
+{
+  "_comment": "19 vũ khí Valorant — stats từ valorant.fandom.com + wiki.playvalorant.com (v9.10+). damage: mảng bracket [maxDist_m, head, body, leg]. spread: độ. fireDelay ms = 1000/fireRate.",
+  "weapons": {
+    "Melee": {
+      "model": { "file": "melee_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "melee", "price": 0, "auto": true, "fireDelay": 500,
+      "equipTime": 600, "damage": [[3, 50, 50, 50]], "penetration": "low",
+      "range": 2.5, "sweepAngle": 20, "comboReset": 1200,
+      "altFire": { "type": "melee", "fireDelay": 1000, "damage": [[2, 75, 75, 75]], "range": 2, "sweepAngle": 14 }, "backstabMultiplier": 2
+    },
+    "Classic": {
+      "model": { "file": "classic_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "secondary", "class": "pistol", "price": 0, "fireRate": 6.75, "auto": false,
+      "mag": 12, "reserveMax": 36, "penetration": "low",
+      "equipTime": 750, "reloadTime": 1750,
+      "damage": [[30, 78, 26, 22], [50, 66, 22, 18]],
+      "spread": { "firstShot": 0.4, "max": 1.2, "recovery": 0.3 },
+      "altFire": { "type": "shotgun", "pellets": 3, "ammoCost": 3, "fireRate": 2.22, "spreadMin": 1.9 }
+    },
+    "Shorty": {
+      "model": { "file": "shorty_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "secondary", "class": "pistol", "price": 300, "fireRate": 3.0, "auto": false,
+      "mag": 2, "reserveMax": 6, "penetration": "low",
+      "equipTime": 750, "reloadTime": 1750,
+      "damage": [[7, 22, 11, 9], [15, 12, 6, 5], [50, 6, 3, 2]],
+      "pellets": 15, "spread": { "firstShot": 3.0, "max": 4.0, "recovery": 0.3 }
+    },
+    "Frenzy": {
+      "model": { "file": "frenzy_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "secondary", "class": "pistol", "price": 450, "fireRate": 10, "auto": true,
+      "mag": 15, "reserveMax": 45, "penetration": "low",
+      "equipTime": 1000, "reloadTime": 1500,
+      "damage": [[20, 78, 26, 22], [50, 63, 21, 17]],
+      "spread": { "firstShot": 0.5, "max": 1.6, "recovery": 0.25 }
+    },
+    "Ghost": {
+      "model": { "file": "ghost_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "secondary", "class": "pistol", "price": 500, "fireRate": 6.75, "auto": false,
+      "mag": 13, "reserveMax": 39, "penetration": "medium",
+      "equipTime": 750, "reloadTime": 1500, "silent": true,
+      "damage": [[30, 105, 30, 25], [50, 87, 25, 21]],
+      "spread": { "firstShot": 0.35, "max": 1.1, "recovery": 0.3 }
+    },
+    "Sheriff": {
+      "model": { "file": "sheriff_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "secondary", "class": "pistol", "price": 800, "fireRate": 4.0, "auto": false,
+      "mag": 6, "reserveMax": 24, "penetration": "high",
+      "equipTime": 1000, "reloadTime": 2250,
+      "damage": [[30, 159, 55, 46], [50, 145, 50, 42]],
+      "spread": { "firstShot": 0.45, "max": 1.6, "recovery": 0.4 }
+    },
+    "Stinger": {
+      "model": { "file": "stinger_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "primary", "class": "smg", "price": 1100, "fireRate": 16, "auto": true,
+      "mag": 20, "reserveMax": 60, "penetration": "low",
+      "equipTime": 750, "reloadTime": 2250,
+      "damage": [[15, 67, 27, 22], [50, 57, 23, 19]],
+      "spread": { "firstShot": 0.5, "max": 1.8, "recovery": 0.22 },
+      "adsZoom": 1.15, "adsSpread": 0.35, "altFire": { "type": "burst", "count": 4, "shotRate": 18, "interval": 472.22 }
+    },
+    "Spectre": {
+      "model": { "file": "spectre_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "primary", "class": "smg", "price": 1600, "fireRate": 13.33, "auto": true,
+      "mag": 30, "reserveMax": 90, "penetration": "low",
+      "equipTime": 750, "reloadTime": 2250, "silent": true,
+      "damage": [[15, 78, 26, 22], [30, 66, 22, 18], [50, 60, 20, 17]],
+      "spread": { "firstShot": 0.4, "max": 1.4, "recovery": 0.22 }, "adsZoom": 1.15, "adsFireRate": 12, "adsSpread": 0.25
+    },
+    "Bucky": {
+      "model": { "file": "bucky_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "primary", "class": "shotgun", "price": 850, "fireRate": 1.1, "auto": false,
+      "mag": 5, "reserveMax": 10, "penetration": "low",
+      "equipTime": 1000, "reloadTime": 2500, "reloadPerShell": 500,
+      "damage": [[8, 34, 17, 14], [12, 26, 13, 11], [50, 18, 9, 7]],
+      "pellets": 15, "range": 50, "spread": { "firstShot": 2.6, "max": 3, "recovery": 0.4 },
+      "altFire": { "type": "airburst", "pellets": 5, "ammoCost": 1, "detonationDistance": 7.5, "spreadMin": 2, "canisterDamage": [[7.5, 40, 20, 15]] }
+    },
+    "Judge": {
+      "model": { "file": "judge_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "primary", "class": "shotgun", "price": 1850, "fireRate": 3.5, "auto": true,
+      "mag": 5, "reserveMax": 15, "penetration": "low",
+      "equipTime": 1000, "reloadTime": 2200,
+      "damage": [[10, 34, 17, 14], [15, 20, 10, 8], [50, 14, 7, 5]],
+      "pellets": 12, "spread": { "firstShot": 3.5, "max": 4.5, "recovery": 0.35 }
+    },
+    "Bulldog": {
+      "model": { "file": "bulldog_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "primary", "class": "rifle", "price": 2050, "fireRate": 10, "auto": true,
+      "mag": 24, "reserveMax": 72, "penetration": "medium",
+      "equipTime": 1000, "reloadTime": 2500,
+      "damage": [[50, 115, 35, 29]],
+      "spread": { "firstShot": 0.35, "max": 1.3, "recovery": 0.28 },
+      "adsZoom": 1.25, "adsSpread": 0.1, "altFire": { "type": "burst", "count": 3, "shotRate": 13.333333, "interval": 475 }
+    },
+    "Guardian": {
+      "model": { "file": "guardian_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "primary", "class": "rifle", "price": 2250, "fireRate": 5.25, "auto": false,
+      "mag": 12, "reserveMax": 36, "penetration": "high",
+      "equipTime": 1000, "reloadTime": 2500,
+      "damage": [[50, 195, 65, 49]],
+      "spread": { "firstShot": 0.15, "max": 1.0, "recovery": 0.35 },
+      "adsZoom": 1.5, "adsZeroError": true
+    },
+    "Phantom": {
+      "model": { "file": "phantom_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "primary", "class": "rifle", "price": 2900, "fireRate": 11, "auto": true,
+      "mag": 30, "reserveMax": 60, "penetration": "medium",
+      "equipTime": 1000, "reloadTime": 2500, "silent": true,
+      "damage": [[20, 156, 39, 33], [50, 140, 35, 29]],
+      "spread": { "firstShot": 0.25, "max": 1.1, "recovery": 0.3 },
+      "adsZoom": 1.25, "adsFireRate": 9.9
+    },
+    "Vandal": {
+      "model": { "file": "vandal_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "primary", "class": "rifle", "price": 2900, "fireRate": 9.75, "auto": true,
+      "mag": 25, "reserveMax": 50, "penetration": "medium",
+      "equipTime": 1000, "reloadTime": 2500,
+      "damage": [[50, 160, 40, 34]],
+      "spread": { "firstShot": 0.25, "max": 1.0, "recovery": 0.375, "tapEfficiency": 6 },
+      "adsZoom": 1.25, "adsFireRate": 8.775,
+      "runVerticalRecoilMult": 1.8
+    },
+    "Marshal": {
+      "model": { "file": "marshal_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "primary", "class": "sniper", "price": 950, "fireRate": 1.5, "auto": false,
+      "mag": 5, "reserveMax": 15, "penetration": "medium",
+      "equipTime": 1250, "reloadTime": 2500, "reloadPerShell": 500,
+      "damage": [[50, 202, 101, 85]],
+      "spread": { "firstShot": 1, "max": 1, "recovery": 0.5 },
+      "adsZoom": 3.5, "adsFireRate": 1.2, "adsZeroError": true
+    },
+    "Outlaw": {
+      "model": { "file": "outlaw_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "primary", "class": "sniper", "price": 2400, "fireRate": 2.75, "auto": false,
+      "mag": 2, "reserveMax": 10, "penetration": "high",
+      "equipTime": 1250, "reloadTime": 2300, "reloadEmptyTime": 3800,
+      "damage": [[50, 238, 140, 119]],
+      "spread": { "firstShot": 3.5, "max": 3.5, "recovery": 0.5 },
+      "adsZoom": 3.5, "adsZeroError": true
+    },
+    "Operator": {
+      "model": { "file": "operator_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "primary", "class": "sniper", "price": 4700, "fireRate": 0.6, "auto": false,
+      "mag": 5, "reserveMax": 10, "penetration": "high",
+      "equipTime": 1500, "reloadTime": 3700,
+      "damage": [[50, 255, 150, 120]],
+      "spread": { "firstShot": 5, "max": 5, "recovery": 0.6 },
+      "adsZoom": 2.5, "adsZoomSecondary": 5, "adsZeroError": true
+    },
+    "Ares": {
+      "model": { "file": "ares_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "primary", "class": "heavy", "price": 1600, "fireRate": 13, "auto": true,
+      "mag": 50, "reserveMax": 100, "penetration": "high",
+      "equipTime": 1250, "reloadTime": 3250,
+      "damage": [[30, 75, 30, 25], [50, 70, 28, 23]],
+      "spread": { "firstShot": 0.5, "max": 2.0, "recovery": 0.25 },
+      "adsZoom": 1.15
+    },
+    "Odin": {
+      "model": { "file": "odin_s0.glb", "yaw": 0, "scale": 1 },
+      "slot": "primary", "class": "heavy", "price": 3200, "fireRate": 12, "auto": true,
+      "mag": 100, "reserveMax": 200, "penetration": "high",
+      "equipTime": 1250, "reloadTime": 5000,
+      "damage": [[30, 95, 38, 32], [50, 77, 31, 26]],
+      "spread": { "firstShot": 0.5, "max": 2.2, "recovery": 0.25 },
+      "fireRateRamp": { "afterShots": 8, "to": 15.6 },
+      "adsZoom": 1.15, "adsFireRate": 15.6
+    }
+  },
+  "armor": {
+    "light": { "price": 400, "absorb": 25 },
+    "heavy": { "price": 1000, "absorb": 50 },
+    "regen": { "price": 650, "absorb": 25, "regenPool": 50, "absorbPct": 1, "delay": 3000, "duration": 3000 },
+    "absorbPct": 0.66,
+    "carryOver": true
+  },
+  "hitbox": { "head": 4.0, "body": 1.0, "leg": 0.85 },
+  "penetrationModel": {
+    "_comment": "Configurable simulation: material resistance per metre, finite tier energy. Riot does not publish its full penetration algorithm.",
+    "energy": { "low": 0.4, "medium": 0.85, "high": 1.6 },
+    "surfaces": { "wood": 0.7, "glass": 0.3, "metal": 3, "concrete": 4, "solid": 1000 },
+    "entryCost": 0.08, "maxSurfaces": 8, "minimumDamageFactor": 0.1
+  },
+  "recoilModel": {
+    "_comment": "Tunable local simulation; first rounds rise, sustained spray changes horizontal direction. These curves are not extracted Riot server data.",
+    "pitchDeg": { "pistol": 1.15, "smg": 0.6, "rifle": 0.7, "sniper": 2, "shotgun": 1.4, "heavy": 0.4 },
+    "pitchCapDeg": 8, "yawDeg": 0.45, "protectedShots": 5, "yawSwitchShots": 4, "returnSpeed": 12,
+    "adsMultiplier": 0.8, "bloomShots": 6
+  },
+  "range": { "distance": 20, "distances": [5, 10, 20, 30, 50], "respawnDelay": 2000, "targetHealth": 100, "wallThickness": 0.15, "wallGap": 2 }
+}

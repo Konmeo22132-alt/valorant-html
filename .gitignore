@@ -1,0 +1,53 @@
+# Local databases, credentials, logs and generated/downloaded files
+data/
+**/__pycache__/
+tools/node_modules/
+tools/.artifacts/
+tools/.devserver-*.log
+tools/multiplayer-server*.log
+tools/multiplayer-server.pid
+*.sqlite
+*.sqlite3
+*.db
+*.pem
+*.key
+.env
+.env.*
+
+# Game data and extracted/converted third-party assets
+model/
+blender-portable/
+psk_addon_tmp/
+tools/converted/
+tools/archived/
+tools/art-review/
+val-strike-html/assets/
+site_c_haven_valorant_low_poly.glb
+*.zip
+*.glb
+*.gltf
+*.psk
+*.pskx
+*.psa
+*.uasset
+*.umap
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.mp3
+*.ogg
+*.wav
+*.mp4
+*.mov
+
+# Local release/deployment products
+upload.bat
+
+# Private server configuration and local activity
+server/bootstrap-admin.json
+server/deploy/receipt.json
+tools/*.log
+.zcode/plans/
+Val-Strike HTML — Full ZCode Prompt.md
+tools/*source-materials.json

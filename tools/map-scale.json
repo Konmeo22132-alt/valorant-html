@@ -1,0 +1,11 @@
+{
+  "_comment": "Restore the map scale removed by blend_to_glb.py (100 / horizontal span). Measured against the unchanged source skydome; do not scale node translations twice.",
+  "coordinateSpace": "abyss-meters-v1",
+  "source": "assets/maps/raw/abyss.blend",
+  "referenceObject": "shared_SkyDomeB",
+  "originalReferenceSpan": 16384.0,
+  "exportedReferenceSpan": 1686.09228515625,
+  "geometryScale": 9.717143091299832,
+  "cellSize": 32,
+  "sceneryCellSize": 128
+}

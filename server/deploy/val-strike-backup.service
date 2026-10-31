@@ -1,0 +1,14 @@
+[Unit]
+Description=Back up VAL-STRIKE SQLite data
+After=val-strike.service
+
+[Service]
+Type=oneshot
+User=valstrike
+Group=valstrike
+ExecStart=/usr/bin/python3 /usr/local/lib/val-strike-backup.py
+UMask=0077
+NoNewPrivileges=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/val-strike

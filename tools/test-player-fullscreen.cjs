@@ -1,0 +1,30 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
+const {JSDOM}=require('./node_modules/jsdom'),B=require('./node_modules/babylonjs');
+const root=path.resolve(__dirname,'../val-strike-html');
+const dom=new JSDOM('<div id="game-container"><canvas id="renderCanvas"></canvas><div id="loading-overlay"><button id="play-fullscreen"></button><p id="controls-status"></p></div></div>',{runScripts:'outside-only',pretendToBeVisual:true,url:'https://localhost/game/game.html'}),w=dom.window;
+w.BABYLON=B;w.GAME_CONFIG={movement:JSON.parse(fs.readFileSync(path.join(root,'game/config/movement.json')))};
+w.GameEntry={pending:true};w.VS_SPAWN=new B.Vector3(0,1.6,0);w.document.hasFocus=()=>true;
+let fullscreen=null,pointer=null;
+Object.defineProperty(w.document,'fullscreenElement',{get:()=>fullscreen});Object.defineProperty(w.document,'fullscreenEnabled',{value:true});
+Object.defineProperty(w.document,'pointerLockElement',{get:()=>pointer});
+w.document.documentElement.requestFullscreen=async()=>{fullscreen=w.document.documentElement;w.document.dispatchEvent(new w.Event('fullscreenchange'));};
+w.navigator.keyboard={lock:async()=>{},unlock(){}};
+const canvas=w.document.querySelector('canvas');canvas.requestPointerLock=async()=>{pointer=canvas;w.document.dispatchEvent(new w.Event('pointerlockchange'));};
+w.document.exitPointerLock=()=>{pointer=null;w.document.dispatchEvent(new w.Event('pointerlockchange'));};
+const context=dom.getInternalVMContext(),run=source=>vm.runInContext(source,context);
+run(`const MAP_MODE='range';const engine=new BABYLON.NullEngine();const scene=new BABYLON.Scene(engine);
+function setLoadingText(){}function uiHUDInject(){}function uiHUDUpdate(){}function weaponInit(){}function weaponClearInput(){}function agentClearInput(){}`);
+run(fs.readFileSync(path.join(root,'game/ui-overlay.js'),'utf8'));
+run('uiHUDInject=()=>{};uiHUDUpdate=()=>{};');
+run(fs.readFileSync(path.join(root,'game/player.js'),'utf8'));
+(async()=>{
+ run('initPlayer()');const gate=w.document.getElementById('fullscreen-required'),overlay=w.document.getElementById('loading-overlay');
+ assert.equal(gate.hidden,true);w.playerController.pause();assert.equal(overlay.style.display,'none','the pause dialog does not cover the initial loading gate');
+ w.GameEntry.pending=false;assert.equal(await w.playerController.startFullscreen(),true);assert.equal(w.playerController.getState().playing,true);assert.equal(gate.hidden,true);assert.equal(overlay.style.display,'none');
+ fullscreen=null;w.document.dispatchEvent(new w.Event('fullscreenchange'));
+ assert.equal(w.playerController.getState().playing,false);assert.equal(overlay.style.display,'flex','fullscreen exit uses the central pause dialog');assert.equal(gate.hidden,true,'the duplicate corner card never opens');assert.equal(w.document.getElementById('game-container').inert,false,'pause controls remain clickable');
+ await w.playerController.startFullscreen();assert.equal(overlay.style.display,'none');assert.equal(w.playerController.getState().playing,true);
+ run('scene.dispose();engine.dispose();');dom.window.close();console.log('PASS initial fullscreen handoff, fullscreen exit, one central pause dialog and resume.');
+})().catch(error=>{console.error(error.stack);dom.window.close();process.exitCode=1;});
+

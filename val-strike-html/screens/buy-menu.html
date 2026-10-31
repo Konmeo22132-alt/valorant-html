@@ -1,0 +1,106 @@
+<div class="screen screen-enter">
+  <header class="buy-header">
+    <span>BUY MENU <span class="hint">— press ESC to close</span></span>
+    <span><span id="buy-phase">Phase: 0:30</span> &nbsp; <span class="creds" id="buy-creds"></span></span>
+  </header>
+
+  <main class="buy-body">
+    <nav class="buy-cats" id="buy-cats">
+      <button class="active" data-cat="rifles">RIFLES</button>
+      <button data-cat="pistols">PISTOLS</button>
+      <button data-cat="smg">SMG</button>
+      <button data-cat="heavy">HEAVY</button>
+      <button data-cat="sniper">SNIPER</button>
+      <button data-cat="shotgun">SHOTGUN</button>
+      <button data-cat="shield">SHIELD</button>
+      <button data-cat="abilities">ABILITIES</button>
+    </nav>
+
+    <section class="buy-items" id="buy-items"></section>
+
+    <aside class="buy-loadout">
+      <h3 style="letter-spacing:0.2em">MY LOADOUT</h3>
+      <div class="row"><span>Primary</span><span id="lo-primary">—</span></div>
+      <div class="row"><span>Secondary</span><span id="lo-secondary">—</span></div>
+      <div class="row"><span>Melee</span><span>Knife</span></div>
+      <div class="row" style="margin-top:auto;border-top:1px solid rgba(255,255,255,.1);padding-top:10px">
+        <span>Total</span><span class="creds" id="lo-total">0 cR</span>
+      </div>
+      <button class="btn-val" id="buy-all">BUY → LAUNCH</button>
+    </aside>
+  </main>
+</div>
+
+<script>
+  // Placeholder catalogue — 3D preview canvas sẽ thay weapon-preview khi có GLB
+  const WEAPONS = {
+    rifles:   [['Vandal', 2900], ['Phantom', 2900], ['Bulldog', 2050], ['Guardian', 2250]],
+    pistols:  [['Classic', 0], ['Shorty', 300], ['Frenzy', 450], ['Ghost', 500], ['Sheriff', 800]],
+    smg:      [['Stinger', 1100], ['Spectre', 1600]],
+    heavy:    [['Ares', 1600], ['Odin', 3200]],
+    sniper:   [['Marshal', 950], ['Outlaw', 2400], ['Operator', 4700]],
+    shotgun:  [['Bucky', 850], ['Judge', 1850]],
+    shield:   [['Light Shields', 400], ['Heavy Shields', 1000]],
+    abilities:[['Ability 1', 200], ['Ability 2', 300], ['Signature', 0]]
+  };
+  const PRIMARIES = new Set(['rifles', 'smg', 'heavy', 'sniper', 'shotgun']);
+
+  let activeCat = 'rifles';
+  const itemsEl = document.getElementById('buy-items');
+  const loadout = { primary: null, secondary: null };
+
+  document.getElementById('buy-creds').textContent = VS.player.credits.toLocaleString() + ' cR';
+
+  function renderItems() {
+    itemsEl.innerHTML = '';
+    WEAPONS[activeCat].forEach(([name, price]) => {
+      const affordable = price <= VS.player.credits;
+      const card = document.createElement('div');
+      card.className = 'weapon-card' + (affordable ? '' : '');
+      card.style.opacity = affordable ? 1 : 0.45;
+      card.innerHTML =
+        '<div class="weapon-preview">3D PREVIEW</div>' +
+        '<div class="weapon-name">' + name + '</div>' +
+        '<div class="weapon-price">' + price.toLocaleString() + ' cR</div>';
+      card.addEventListener('click', () => {
+        if (!affordable) return;
+        VS.player.credits -= price;
+        if (PRIMARIES.has(activeCat)) { loadout.primary = name; VS.player.weapon = name; }
+        else if (activeCat === 'pistols') { loadout.secondary = name; }
+        document.getElementById('buy-creds').textContent = VS.player.credits.toLocaleString() + ' cR';
+        document.getElementById('lo-primary').textContent = loadout.primary || '—';
+        document.getElementById('lo-secondary').textContent = loadout.secondary || '—';
+      });
+      itemsEl.appendChild(card);
+    });
+  }
+
+  document.getElementById('buy-cats').addEventListener('click', (e) => {
+    if (e.target.tagName !== 'BUTTON') return;
+    document.querySelectorAll('#buy-cats button').forEach((b) => b.classList.remove('active'));
+    e.target.classList.add('active');
+    activeCat = e.target.dataset.cat;
+    renderItems();
+  });
+
+  document.getElementById('buy-all').addEventListener('click', () => VS.navigate('/game'));
+
+  // Buy phase countdown
+  let t = 30;
+  const phaseEl = document.getElementById('buy-phase');
+  const phaseTimer = setInterval(() => {
+    t--;
+    phaseEl.textContent = 'Phase: 0:' + String(t).padStart(2, '0');
+    if (t <= 0) clearInterval(phaseTimer);
+  }, 1000);
+
+  // ESC đóng buy menu → quay lại HUD/game
+  document.addEventListener('keydown', function onKey(e) {
+    if (e.code === 'Escape') {
+      document.removeEventListener('keydown', onKey);
+      VS.navigate('/hud');
+    }
+  });
+
+  renderItems();
+</script>

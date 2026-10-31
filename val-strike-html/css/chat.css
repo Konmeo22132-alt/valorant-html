@@ -1,0 +1,39 @@
+.room-chat{position:fixed;left:24px;bottom:28px;z-index:1600;width:min(380px,calc(100vw - 48px));box-sizing:border-box;color:#edf4f3;font:13px/1.5 GameDIN,GameInter,Segoe UI,sans-serif;text-shadow:0 1px 3px #000;pointer-events:none}
+.room-chat[hidden],.room-chat [hidden]{display:none!important}
+.room-chat-toggle{display:flex;align-items:center;gap:9px;width:100%;padding:7px 10px;border:0;border-left:2px solid #8bd5cb;background:#10232ace;color:#d5e8e6;font:600 10px/1.4 GameDIN,GameInter,Segoe UI,sans-serif;letter-spacing:.08em;text-align:left;cursor:pointer;pointer-events:auto}
+.room-chat-toggle kbd{padding:1px 5px;border:1px solid #bed9d169;border-radius:2px;font:inherit;color:#f4f9f7}
+.room-chat-audience{margin-left:auto;color:#91bab6;font-size:9px}
+.room-chat-log{max-height:154px;overflow:hidden;padding:8px 10px;background:linear-gradient(90deg,#0b1d27dc,#0b1d2799);overflow-wrap:anywhere}
+.room-chat-log:empty{display:none}
+.room-chat-message{padding:2px 0;color:#f0f3f1}
+.room-chat-message strong{font-weight:600;color:#9dded7}
+.room-chat-message.self strong{color:#e4e9b5}
+.room-chat-tag{font-size:11px;color:#9dded7}
+.room-chat-message[data-channel="all"] .room-chat-tag{color:#eac894}
+.room-chat:not(.open) .room-chat-message:not(:nth-last-child(-n+4)){display:none}
+.room-chat.open{pointer-events:auto}
+.room-chat.open .room-chat-log{max-height:min(250px,30vh);overflow-y:auto;scrollbar-width:thin;scrollbar-color:#78a9a4 #102630}
+.room-chat.open .room-chat-toggle{background:#16333eee;border-left-color:#b7f3e7}
+#room-chat-form{display:flex;align-items:center;flex-wrap:wrap;border:1px solid #a6d8d1a6;border-top:0;background:#102831f5;padding:8px 9px 5px;gap:7px;text-shadow:none}
+.room-chat-label{font-size:9px;letter-spacing:.06em;color:#9bd5cb}
+.room-chat-channels{display:flex;gap:6px;width:100%;padding-bottom:6px;border-bottom:1px solid #9fcac12b}
+.room-chat-channels button{border:1px solid transparent;background:transparent;color:#a4c0bf;font:600 10px/1.4 GameDIN,GameInter,Segoe UI,sans-serif;letter-spacing:.06em;padding:4px 10px;cursor:pointer}
+.room-chat-channels button[aria-pressed="true"]{background:#77d2c420;border-color:#77d2c47a;color:#c4f9ee}
+.room-chat-channels button[data-chat-channel="all"][aria-pressed="true"]{color:#ffe4bb;border-color:#f1c3898c;background:#e0b87a1c}
+.room-chat-channels button:disabled{opacity:.35;cursor:default}
+.room-chat[data-channel="all"] .room-chat-label,.room-chat[data-channel="all"] .room-chat-audience{color:#eac894}
+#room-chat-input{flex:1;min-width:0;box-sizing:border-box;width:0;background:transparent;border:0;border-radius:0;outline:none;color:#fff;font:13px/1.5 GameDIN,GameInter,Segoe UI,sans-serif;padding:4px 0;text-transform:none;letter-spacing:normal}
+#room-chat-input::placeholder{color:#a4bec1}
+.room-chat-send{border:0;background:#3d9f92;color:#fff;font-size:18px;line-height:1;padding:5px 8px;cursor:pointer}
+.room-chat-send:disabled{opacity:.45;cursor:default}
+.room-chat-help{width:100%;text-align:right;font-size:10px;color:#b3c9c9}
+.room-chat-status{margin:0;padding:6px 10px;background:#182b33e8;color:#ffcdac;font-size:11px}
+.room-chat.in-game{bottom:120px}
+.room-chat.in-game:not(.open) .room-chat-toggle{width:max-content;border:0;background:#0d232d6b;opacity:.65;padding:3px 7px}
+.room-chat.in-game:not(.open) .room-chat-audience{display:none}
+.room-chat.in-game:not(.open) .room-chat-log,.room-chat.in-game:not(.open) .room-chat-status{transition:opacity .35s}
+.room-chat.in-game:not(.open):not(.recent) .room-chat-log,.room-chat.in-game:not(.open):not(.recent) .room-chat-status{opacity:0;pointer-events:none}
+.room-chat.in-game.selecting{bottom:22px;width:min(310px,26vw)}
+.room-chat button:focus-visible{outline:2px solid #cff8ed;outline-offset:2px}
+@media(max-height:600px){.room-chat.in-game{bottom:95px}.room-chat-log{max-height:95px}.room-chat.open .room-chat-log{max-height:25vh}}
+@media(max-width:700px){.room-chat{left:12px;width:min(340px,calc(100vw - 24px))}.room-chat.in-game.selecting{width:min(310px,42vw)}}

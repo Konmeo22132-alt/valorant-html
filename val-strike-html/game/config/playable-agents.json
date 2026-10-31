@@ -1,0 +1,150 @@
+{
+  "checked": "2026-10-09",
+  "bindings": {
+    "C": "KeyC",
+    "Q": "KeyQ",
+    "E": "KeyE",
+    "X": "KeyX"
+  },
+  "Clove": {
+    "code": "smonk",
+    "color": "#BD88EC",
+    "ultCost": 8,
+    "C": {
+      "name": "Pick-me-up",
+      "charges": 1,
+      "price": 200,
+      "assistWindow": 6000,
+      "activationWindow": 4500,
+      "duration": 10000,
+      "overheal": 50,
+      "healRate": 50,
+      "decayRate": 25,
+      "hasteDuration": 3000,
+      "haste": 1.15
+    },
+    "Q": {
+      "name": "Meddle",
+      "charges": 1,
+      "price": 250,
+      "radius": 4,
+      "windup": 750,
+      "decay": 90,
+      "decayRate": 120,
+      "restoreRate": 51,
+      "duration": 5000
+    },
+    "E": {
+      "name": "Ruse",
+      "charges": 2,
+      "free": 1,
+      "price": 150,
+      "cooldown": 40000,
+      "range": 60,
+      "deadRange": 42.5,
+      "radius": 4,
+      "windup": 1000,
+      "duration": 14000,
+      "deadDuration": 6000
+    },
+    "X": {
+      "name": "Not Dead Yet",
+      "window": 3000,
+      "revive": 1500,
+      "intangible": 2000,
+      "deadline": 10000,
+      "reequip": 800
+    }
+  },
+  "Jett": {
+    "code": "wushu",
+    "color": "#D5F4FF",
+    "ultCost": 8,
+    "C": {
+      "name": "Cloudburst",
+      "charges": 2,
+      "price": 200,
+      "radius": 3.6,
+      "duration": 2500,
+      "speed": 22,
+      "flight": 2200
+    },
+    "Q": {
+      "name": "Updraft",
+      "charges": 1,
+      "price": 150,
+      "verticalSpeed": 9.9,
+      "reequip": 900
+    },
+    "E": {
+      "name": "Tailwind",
+      "charges": 1,
+      "free": 1,
+      "kills": 2,
+      "windup": 1000,
+      "window": 7500,
+      "speed": 24.4444,
+      "duration": 450,
+      "reequip": 1000
+    },
+    "X": {
+      "name": "Blade Storm",
+      "knives": 5,
+      "equip": 1020,
+      "interval": 167,
+      "burstInterval": 450,
+      "damage": [
+        150,
+        50,
+        42.5
+      ],
+      "burstSpread": 5
+    }
+  },
+  "Sage": {
+    "code": "thorne",
+    "color": "#6FE7D3",
+    "ultCost": 7,
+    "C": {
+      "name": "Barrier Orb",
+      "charges": 1,
+      "price": 300,
+      "range": 15,
+      "segments": 4,
+      "width": 2.6,
+      "depth": 1.5,
+      "height": 2,
+      "hp": 400,
+      "fortifiedHP": 600,
+      "fortify": 2000,
+      "rise": 1350,
+      "duration": 40000,
+      "decayStart": 35000
+    },
+    "Q": {
+      "name": "Slow Orb",
+      "charges": 2,
+      "price": 200,
+      "radius": 5,
+      "duration": 7000,
+      "slow": 0.5
+    },
+    "E": {
+      "name": "Healing Orb",
+      "charges": 1,
+      "free": 1,
+      "cooldown": 45000,
+      "range": 30,
+      "allyHP": 100,
+      "selfHP": 100,
+      "duration": 5000,
+      "damageDelay": 2000
+    },
+    "X": {
+      "name": "Resurrection",
+      "range": 12,
+      "channel": 3300,
+      "hp": 100
+    }
+  }
+}

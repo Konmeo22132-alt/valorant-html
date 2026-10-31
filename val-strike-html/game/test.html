@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="vi" class="assets-pending">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/asset-preloader.css?v=42">
+  <script src="/js/asset-preloader.js?v=50"></script>
+  <link rel="icon" href="data:,">
+  <title>Val-Strike — Map Test (Fly Camera)</title>
+  <link rel="stylesheet" href="../css/variables.css?v=10">
+  <link rel="stylesheet" href="../css/components.css?v=10">
+  <style>
+    body { overflow: hidden; }
+    #coord-hud {
+      position: absolute; top: 12px; left: 12px; z-index: 20;
+      background: rgba(15, 25, 35, 0.85); padding: 10px 14px;
+      font-family: 'Courier New', monospace; font-size: 13px;
+      clip-path: var(--clip-br); line-height: 1.6;
+    }
+    #coord-hud b { color: var(--val-red); }
+    #marker-panel {
+      position: absolute; top: 12px; right: 12px; z-index: 20;
+      width: 300px; max-height: 70vh; overflow-y: auto;
+      background: rgba(15, 25, 35, 0.9); padding: 14px;
+      clip-path: var(--clip-notch); font-size: 12px;
+    }
+    #marker-panel h3 {
+      font-family: var(--font-title); font-size: 12px;
+      letter-spacing: 0.15em; margin-bottom: 10px;
+    }
+    .marker-row {
+      font-family: 'Courier New', monospace; padding: 4px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: var(--val-off-white);
+    }
+    .marker-row b { color: var(--val-red); }
+    #marker-actions { display: flex; gap: 8px; margin-top: 10px; }
+    #marker-actions button {
+      flex: 1; background: var(--val-dark); color: var(--val-white);
+      border: 1px solid var(--val-mid); padding: 6px; cursor: pointer;
+      font-family: var(--font-title); font-size: 10px; letter-spacing: 0.1em;
+      clip-path: var(--clip-btn);
+    }
+    #marker-actions button:hover { border-color: var(--val-red); }
+    #hint-bar {
+      position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+      background: rgba(15, 25, 35, 0.85); padding: 8px 20px;
+      font-size: 12px; clip-path: var(--clip-notch); z-index: 20;
+      color: var(--val-off-white);
+    }
+    #hint-bar b { color: var(--val-red); }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="renderCanvas"></canvas>
+
+    <div id="coord-hud">
+      <b>CAM</b> <span id="hud-pos">0.0, 0.0, 0.0</span><br>
+      <b>SPD</b> <span id="hud-speed">0.8</span> (lăn chuột để chỉnh)
+    </div>
+
+    <div id="marker-panel">
+      <h3>SPAWN MARKERS (SHIFT+CLICK)</h3>
+      <div id="marker-list"><div class="marker-row">Chưa có marker nào</div></div>
+      <div id="marker-actions">
+        <button id="copy-json">COPY JSON</button>
+        <button id="clear-markers">CLEAR</button>
+      </div>
+    </div>
+
+    <div id="hint-bar">
+      <b>WASD</b> di chuyển • <b>SPACE</b> lên • <b>C</b> xuống • <b>Shift+Click</b> đánh dấu toạ độ • <b>ESC</b> thoát chuột
+    </div>
+
+    <div id="loading-overlay">
+      <div style="font-size:32px">VAL<span style="color:var(--val-red)">STRIKE</span></div>
+      <div style="font-size:13px;letter-spacing:.3em" id="loading-text">LOADING MAP…</div>
+      <div class="hint" style="max-width:600px;line-height:1.6">
+        Val-Strike HTML is a non-profit fan-made portfolio project.<br>
+        All Valorant assets belong to Riot Games. Not affiliated with or endorsed by Riot Games.
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/vendor/babylon.js?v=8.32.0"></script>
+  <script src="../assets/vendor/babylonjs.loaders.min.js?v=8.32.0"></script>
+  <script src="../js/state.js?v=41"></script>
+  <script src="../js/profile.js?v=44"></script>
+  <script src="config-loader.js?v=12"></script>
+  <script src="collision-world.js?v=51"></script>
+  <script src="map-streamer.js?v=48"></script>
+  <script src="engine.js?v=51"></script>
+  <script>
+    const markers = [];
+    let flyCam;
+    let markerIndex = 0;
+
+    function initFlyCamera() {
+      const canvas = document.getElementById('renderCanvas');
+      const sp = window.VS_SPAWN || new BABYLON.Vector3(0, 30, 0);
+      flyCam = new BABYLON.UniversalCamera('fly', new BABYLON.Vector3(sp.x, sp.y + 25, sp.z + 40), scene);
+      flyCam.fov = 1.2;
+      flyCam.minZ = 0.1;
+      flyCam.speed = 0.8;
+      flyCam.checkCollisions = false;   // noclip — bay xuyên tường
+      flyCam.applyGravity = false;
+      // Bỏ toàn bộ input mặc định của Babylon (dính lỗi canvas focus + bắt
+      // giữ chuột mới xoay được) — tự quản input bên dưới
+      flyCam.inputs.clear();
+      scene.activeCamera = flyCam;
+
+      const keys = {};
+      let playing = false;
+      const LOOK_SENS = 0.0022;
+
+      const overlayEl = document.getElementById('loading-overlay');
+      const hideOverlay = () => { overlayEl.style.display = 'none'; playing = true; window.__gamePlaying = true; };
+      const showPause = () => {
+        overlayEl.style.display = 'flex';
+        document.getElementById('loading-text').textContent = 'PAUSED — CLICK TO RESUME';
+        playing = false;
+        window.__gamePlaying = false;
+        Object.keys(keys).forEach(key => delete keys[key]);
+        if (document.pointerLockElement === canvas) document.exitPointerLock();
+        window.__renderOnce = true;
+      };
+      window.addEventListener('blur', showPause);
+      document.addEventListener('visibilitychange', () => { if (document.hidden) showPause(); });
+      document.addEventListener('pointerlockchange', () => { if (!document.pointerLockElement && playing) showPause(); });
+
+      // --- Nhìn: xoay camera theo movementX/Y (hoạt động cả khi không khoá chuột) ---
+      document.addEventListener('pointermove', (e) => {
+        if (!playing || (document.pointerLockElement !== canvas && !(e.buttons & 4))) return;
+        const mx = e.movementX || 0, my = e.movementY || 0;
+        flyCam.rotation.y += mx * LOOK_SENS;
+        flyCam.rotation.x = Math.max(-1.55, Math.min(1.55, flyCam.rotation.x + my * LOOK_SENS));
+      });
+
+      // --- Phím: nghe trên window (không phụ thuộc canvas focus) ---
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'Escape') { showPause(); return; }
+        if (!playing) return;
+        keys[e.code] = true;
+        if (['Space', 'KeyW', 'KeyA', 'KeyS', 'KeyD', 'KeyC'].includes(e.code)) e.preventDefault();
+      });
+      window.addEventListener('keyup', (e) => { keys[e.code] = false; });
+
+      // --- Di chuyển: tự tính mỗi frame từ hướng camera ---
+      // (getDeltaTime() trả 0 vì vòng rAF tự quản — phải tự đo delta)
+      let _lastMoveT = performance.now();
+      scene.onBeforeRenderObservable.add(() => {
+        if (!playing) { _lastMoveT = performance.now(); return; }
+        const now = performance.now();
+        const dt = Math.min(0.1, (now - _lastMoveT) / 1000);
+        _lastMoveT = now;
+        const fwd = flyCam.getDirection(BABYLON.Axis.Z);
+        const right = flyCam.getDirection(BABYLON.Axis.X);
+        const up = BABYLON.Vector3.Up();
+        const move = new BABYLON.Vector3(0, 0, 0);
+        if (keys['KeyW']) move.addInPlace(fwd);
+        if (keys['KeyS']) move.subtractInPlace(fwd);
+        if (keys['KeyD']) move.addInPlace(right);
+        if (keys['KeyA']) move.subtractInPlace(right);
+        if (keys['Space']) move.addInPlace(up);
+        if (keys['KeyC']) move.subtractInPlace(up);
+        if (move.lengthSquared() > 0) {
+          move.normalize().scaleInPlace(flyCam.speed * dt * 60);
+          flyCam.position.addInPlace(move);
+        }
+      });
+
+      // --- Bắt đầu / tạm dừng ---
+      const startPlay = () => {
+        try { canvas.requestPointerLock()?.catch(() => {}); } catch (err) {}
+        hideOverlay();
+      };
+      canvas.addEventListener('click', (e) => {
+        if (e.shiftKey) { markSpawn(e); return; }
+        startPlay();
+      });
+      overlayEl.addEventListener('click', startPlay);
+
+      // Lăn chuột chỉnh tốc độ bay
+      canvas.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        flyCam.speed = Math.min(20, Math.max(0.1, flyCam.speed * (e.deltaY < 0 ? 1.25 : 0.8)));
+        document.getElementById('hud-speed').textContent = flyCam.speed.toFixed(2);
+      }, { passive: false });
+
+      // HUD toạ độ
+      setInterval(() => {
+        const p = flyCam.position;
+        document.getElementById('hud-pos').textContent =
+          p.x.toFixed(1) + ', ' + p.y.toFixed(1) + ', ' + p.z.toFixed(1);
+      }, 300);
+
+      document.getElementById('loading-text').textContent = 'READY — CLICK TO FLY';
+      window.__renderOnce = true;
+    }
+
+    function markSpawn(e) {
+      const canvas = document.getElementById('renderCanvas');
+      // Đang khoá chuột → bắn ray qua tâm màn hình; không thì theo con trỏ
+      const locked = document.pointerLockElement === canvas;
+      const rect = canvas.getBoundingClientRect();
+      const ray = scene.createPickingRay(locked ? canvas.clientWidth / 2 : e.clientX - rect.left,
+        locked ? canvas.clientHeight / 2 : e.clientY - rect.top, BABYLON.Matrix.Identity(), flyCam);
+      const pick = window.collisionWorld.pick(ray);
+      if (!pick || !pick.hit) return;
+
+      const p = pick.pickedPoint;
+      markerIndex++;
+      const name = 'SPAWN_' + markerIndex;
+
+      // Marker: quả cầu đỏ phát sáng + cột mốc
+      const sphere = BABYLON.MeshBuilder.CreateSphere(name, { diameter: 0.6, segments: 8 }, scene);
+      sphere.position.copyFrom(p);
+      const mat = new BABYLON.StandardMaterial(name + '_mat', scene);
+      mat.emissiveColor = BABYLON.Color3.FromHexString('#FF4655');
+      mat.diffuseColor = BABYLON.Color3.Black();
+      sphere.material = mat;
+
+      const yFloor = +p.y.toFixed(2);
+      markers.push({ name, x: +p.x.toFixed(2), y: yFloor, z: +p.z.toFixed(2), coordinateSpace: window.__mapTransform?.coordinateSpace });
+      persistMarkers();
+      renderMarkerList();
+    }
+
+    function persistMarkers() {
+      VSProfile.saveData({markers}).catch(error=>console.error(error.message));
+    }
+
+    // Khôi phục marker từ lần chạy trước (sống sót qua reload)
+    function restoreMarkers() {
+      try {
+        const saved = VSProfile.data.markers||[];
+        saved.slice(0, 64).filter(m => ['x', 'y', 'z'].every(k => Number.isFinite(m[k]))).map(mapSavedMarker).filter(Boolean).forEach((m) => {
+          m.name = 'SPAWN_' + (++markerIndex);
+          const sphere = BABYLON.MeshBuilder.CreateSphere(m.name, { diameter: 0.6, segments: 8 }, scene);
+          sphere.position.set(m.x, m.y, m.z);
+          const mat = new BABYLON.StandardMaterial(m.name + '_mat', scene);
+          mat.emissiveColor = BABYLON.Color3.FromHexString('#FF4655');
+          mat.diffuseColor = BABYLON.Color3.Black();
+          sphere.material = mat;
+          markers.push(m);
+          const num = parseInt(m.name.split('_')[1]);
+          if (num > markerIndex) markerIndex = num;
+        });
+        if (saved.length) renderMarkerList();
+      } catch (err) {}
+    }
+
+    function renderMarkerList() {
+      const list = document.getElementById('marker-list');
+      if (!markers.length) {
+        list.innerHTML = '<div class="marker-row">Chưa có marker nào</div>';
+        return;
+      }
+      list.innerHTML = markers.map((m, i) =>
+        '<div class="marker-row"><b>' + m.name + '</b> y=' + m.y +
+        '<br>&nbsp;&nbsp;x=' + m.x + ' z=' + m.z + '</div>'
+      ).join('');
+    }
+
+    document.getElementById('copy-json').addEventListener('click', () => {
+      const json = JSON.stringify(
+        markers.map(m => ({ name: m.name, x: m.x, y: m.y, z: m.z, coordinateSpace: m.coordinateSpace })), null, 2);
+      navigator.clipboard.writeText(json).then(() => {
+        const btn = document.getElementById('copy-json');
+        btn.textContent = 'COPIED ✓';
+        setTimeout(() => (btn.textContent = 'COPY JSON'), 1500);
+      });
+    });
+
+    document.getElementById('clear-markers').addEventListener('click', () => {
+      markers.length = 0;
+      markerIndex = 0;
+      scene.meshes.filter(m => m.name.startsWith('SPAWN_')).forEach(m => m.dispose(false, true));
+      persistMarkers(); window.__renderOnce = true;
+      renderMarkerList();
+    });
+
+    const loadButton = document.createElement('button');
+    loadButton.id = 'initialize-viewer'; loadButton.disabled = true;
+    loadButton.textContent = 'LOAD MAP'; loadButton.className = 'btn-val';
+    document.getElementById('loading-overlay').appendChild(loadButton);
+    document.getElementById('loading-text').textContent = 'MAP VIEWER — CLICK LOAD TO START';
+    window.CONFIG_READY.then(() => { loadButton.disabled = false; }).catch(error => {
+      recordGameError(error); setLoadingText('CONFIG FAILED — RELOAD TO RETRY');
+    });
+    loadButton.addEventListener('click', async event => {
+      event.stopPropagation(); loadButton.disabled = true;
+      try { await initEngine(); initFlyCamera(); restoreMarkers(); loadButton.remove(); }
+      catch (error) {
+        window.mapStreamer?.dispose(); scene?.dispose(); engine?.dispose();
+        recordGameError(error); setLoadingText('LOAD FAILED — RELOAD TO RETRY');
+      }
+    }, { once: true });
+  </script>
+</body>
+</html>

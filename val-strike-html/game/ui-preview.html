@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><title>Val-Strike — UI preview</title><link rel="icon" href="data:,"><link rel="stylesheet" href="../css/variables.css"><link rel="stylesheet" href="../css/components.css"><link rel="stylesheet" href="agent-ui.css"><link rel="stylesheet" href="match-ui.css"><link rel="stylesheet" href="native-ui.css?v=33">
+<style>body{margin:0;background:#192c32}#game-container{position:relative;height:calc(100vh - 40px);background:linear-gradient(155deg,#526869,#314b4d 55%,#172f35)}#renderCanvas{width:100%;height:100%;display:block}#preview-controls{position:fixed;left:0;right:0;bottom:0;z-index:9;height:40px;display:flex;align-items:center;justify-content:center;gap:8px;background:#14272d;color:#dce9e3;font:12px/1.5 var(--game-font)}#preview-controls button{background:#203c44;border:1px solid #b5d8ca66;color:white;padding:5px 8px;cursor:pointer;font:inherit}#preview-controls p{display:none}#preview-controls>div{font-size:9px;margin-right:8px}#match-controls{display:none}</style></head>
+<body><div id="game-container"><canvas id="renderCanvas"></canvas><div id="loading-overlay" style="display:none"></div><div id="preview-controls"><div>UI PREVIEW · DỮ LIỆU MẪU</div><p>Trang này không khởi tạo WebGL, map 3D hoặc model.</p><button id="preview-shop">Shop · B</button><button id="preview-board">Bảng điểm · Tab</button><button id="preview-report">Báo cáo giao tranh</button><button id="preview-kill">Kill banner</button></div></div>
+<script src="../assets/vendor/babylon.js"></script><script src="../js/state.js"></script><script src="config-loader.js?v=33"></script><script src="agent-abilities.js?v=33"></script><script src="match-rules.js"></script><script src="ui-overlay.js?v=33"></script><script src="hud-map.js?v=33"></script><script src="combat-ui.js?v=32"></script><script src="shop-ui.js?v=32"></script><script src="match-ui.js?v=33"></script>
+<script>
+const MAP_MODE='abyss';let scene={onBeforeRenderObservable:{add(){}},onDisposeObservable:{add(){}},activeCamera:null};
+const camera={position:new BABYLON.Vector3(-9,9.7,44),globalPosition:new BABYLON.Vector3(-9,9.7,44),rotation:{y:Math.PI},fov:1.4,getDirection:()=>new BABYLON.Vector3(0,0,-1)};
+const weaponState={current:'Vandal',ads:false,reloading:false,loadout:{primary:'Vandal',secondary:'Classic',melee:'Melee'}};
+const playerController={cursorMode:v=>window.__agentCursorMode=v,stop(){},getState:()=>({feet:[-9,8,44],grounded:true,crouching:false,velocity:[0,0,0],keys:[]})};
+const deathSpectator={target:null},matchState={active:true,mode:'unrated',human:null,bots:[],sites:[],orbs:[],rules:null};
+function matchActive(){return true;}function matchMember(entity){return entity===VS.player?matchState.human:entity.member;}function matchMemberPoint(p){return p===matchState.human?agentPosition():p.entity.position;}
+function weaponDefs(){return GAME_CONFIG.weapons.weapons;}function weaponDef(name=weaponState.current){return weaponDefs()[name];}function weaponClearInput(){}function worldPick(){return null;}function matchDrop(){}function matchBotSpawn(){}
+function matchApplyLoadout(){VS.player.credits=matchState.human.credits;VS.player.weapon=matchState.human.inventory.primary||matchState.human.inventory.secondary;uiHUDUpdate();}
+CONFIG_READY.then(()=>{
+  VS.player.agent='Clove';VS.player.weapon='Vandal';VS.player.ammo={clip:25,reserve:75};VS.player.credits=5000;agentState.ready=true;agentState.charges={C:1,Q:1,E:2};agentState.ult=5;
+  const members=['a','b'].flatMap(team=>['Clove','Jett','Sage','Clove','Jett'].map((agent,i)=>({id:(team==='a'?0:5)+i,team,agent,name:team==='a'&&i===0?'Player':team.toUpperCase()+' Bot '+(i+1),ultCost:8,hp:100,armor:0,entity:null})));
+  members.forEach(p=>p.entity={member:p,hp:100,position:new BABYLON.Vector3(-9+p.id*3,8,44-p.id*9),bot:{ability:{charges:{C:1,Q:1,E:1}}}});members[0].entity=VS.player;matchState.human=members[0];
+  for(const p of members)Object.defineProperty(p,'hp',{enumerable:true,get:()=>p.entity.hp,set:v=>p.entity.hp=v});
+  for(const key of ['credits','armor'])Object.defineProperty(members[0],key,{enumerable:true,get:()=>VS.player[key],set:v=>VS.player[key]=v});
+  Object.defineProperty(members[0],'ult',{enumerable:true,get:()=>agentState.ult,set:v=>agentState.ult=v});
+  const rules=new MatchRules(GAME_CONFIG,(type,p)=>{if(type==='purchase')uiRecordPurchase(p,p.bought.at(-1).price);});matchState.rules=rules;rules.start(members,0);rules.round=7;rules.score={a:4,b:2};rules.until=45000;VS.round.score=rules.score;
+  for(const p of members){p.credits=5000-p.id*220;p.kills=11-p.id;p.deaths=p.id%6;p.assists=p.id%4;p.ult=p.id%8;p.inventory.primary='Vandal';}members[2].inventory.primary=null;agentState.ult=5;
+  matchState.sites=GAME_CONFIG['abyss-match'].sites.map(s=>({...s,position:BABYLON.Vector3.FromArray(s.position)}));
+  uiHUDInject();matchUIInit();uiRoundStart();members.forEach(p=>{p.uiScore=1800+p.id*180;p.uiSpent=6000;p.uiDamage=3000;});uiState.roundsDone=6;agentHUD();matchUIUpdate();
+  document.getElementById('preview-shop').onclick=uiShopToggle;
+  document.getElementById('preview-board').onclick=()=>{const board=document.getElementById('match-scoreboard');board.hidden=!board.hidden;uiScoreboardUpdate();};
+  document.getElementById('preview-kill').onclick=()=>uiElimination(members[5],members[0]);
+  document.getElementById('preview-report').onclick=()=>{VS.player.hp=0;uiState.reportHidden=false;uiState.report={killer:members[5],round:7,rows:new Map([[5,{other:members[5],out:78,in:160,zones:{head:1,body:0,leg:0}}],[7,{other:members[7],out:39,in:0,zones:{head:0,body:0,leg:0}}]])};uiCombatReportUpdate();uiHUDUpdate();uiUpdateRoster();};
+  uiKillFeed('Player','B Bot 1',{killer:members[0],victim:members[5],weapon:'Vandal',headshot:true});
+  setInterval(()=>{uiMapUpdate(0);},300);
+}).catch(console.error);
+</script></body></html>

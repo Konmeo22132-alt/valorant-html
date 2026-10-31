@@ -1,0 +1,27 @@
+/* Touch HUD is inert until game.html is opened with ?mode=mobile. */
+#mobile-hud{display:none;position:fixed;inset:0;z-index:30;pointer-events:none;touch-action:none;user-select:none;font-family:var(--game-font,system-ui);color:#effaf6}
+html.mobile-mode #mobile-hud{display:block}
+#mobile-look-zone{position:absolute;left:31%;right:0;top:0;bottom:0;pointer-events:auto;touch-action:none}
+.mobile-touch-zone{position:absolute;left:4vw;bottom:8vh;width:25vw;height:25vw;max-width:190px;max-height:190px;min-width:115px;min-height:115px;border:1px solid #d7fff444;border-radius:50%;background:#12333e55;pointer-events:auto;touch-action:none}
+#mobile-joystick-stick{position:absolute;left:50%;top:50%;width:38%;height:38%;transform:translate(-50%,-50%);border-radius:50%;background:#9af6db99;border:1px solid #eafff4;box-shadow:0 0 20px #70e7ca55}
+.mobile-fire{position:absolute;pointer-events:auto;touch-action:none;width:clamp(65px,11vw,110px);height:clamp(65px,11vw,110px);border-radius:50%;display:grid;place-items:center;background:#ff546a9c;border:1px solid #ffe7e9;color:white;font-weight:700;font-size:clamp(10px,2vw,15px);box-shadow:0 0 22px #ff546a44}
+.mobile-fire-left{left:29%;bottom:12vh}.mobile-fire-right{right:5vw;bottom:19vh}
+#mobile-actions{position:absolute;right:4vw;bottom:5vh;display:flex;gap:7px;align-items:flex-end;pointer-events:auto}
+#mobile-actions button,#mobile-abilities button,#mobile-weapons button,#mobile-ping{pointer-events:auto;touch-action:none;min-width:44px;min-height:44px;padding:5px 8px;border-radius:9px;border:1px solid #ccfff166;background:#102932c9;color:#f4fff9;font:700 11px var(--game-font,system-ui)}
+#mobile-actions button[data-mobile-action="jump"]{min-width:58px;min-height:58px;border-radius:50%;background:#297e83cc}
+#mobile-actions button[data-mobile-action="crouch"]{background:#4c526bc9}
+#mobile-actions button[data-mobile-action="ads"]{background:#8a6a2dc9}
+#mobile-abilities{position:absolute;right:4vw;top:12vh;display:flex;gap:7px;pointer-events:auto}
+#mobile-abilities button{width:clamp(43px,7vw,62px);height:clamp(43px,7vw,62px);font-size:15px;border-radius:50%;background:#185b69cc}
+#mobile-abilities button[data-mobile-ability="X"]{background:#b28d31d9;border-color:#fff2ad99}
+#mobile-weapons{position:absolute;right:4vw;bottom:calc(5vh + 62px);display:flex;gap:6px;pointer-events:auto}
+#mobile-ping{position:absolute;left:4vw;top:5vh;background:#253d62dd;pointer-events:auto}
+#mobile-layout-toggle{position:absolute;left:4vw;top:calc(5vh + 48px);pointer-events:auto;touch-action:none;padding:8px 10px;border-radius:7px;border:1px solid #ccfff166;background:#142f3bd9;color:#effff9;font:700 11px var(--game-font,system-ui)}
+#mobile-layout-editor{position:absolute;left:50%;top:5vh;transform:translateX(-50%);width:min(330px,82vw);padding:12px;background:#0b2029f2;border:1px solid #adf4db88;box-shadow:0 8px 30px #0008;pointer-events:auto;touch-action:auto;color:#f0fff9}
+#mobile-layout-editor header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;letter-spacing:.12em}
+#mobile-layout-editor label{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:8px 0;font-size:12px}#mobile-layout-editor select{background:#17343e;color:inherit;border:1px solid #84cfc055;padding:4px}
+#mobile-layout-editor input{width:150px}#mobile-layout-editor button{margin:4px 4px 0 0;background:#24535b;border:1px solid #b8ffe688;color:white;padding:6px 9px;border-radius:4px}
+#mobile-layout-status{font-size:11px;color:#a9d4ce;margin:8px 0 0}.mobile-layout-editing [data-mobile-layout-id]{outline:1px dashed #f7f1a9;pointer-events:auto!important;touch-action:none}
+.mobile-layout-selected{outline:2px solid #fff3a7!important;filter:brightness(1.35)}
+.mobile-pressed{filter:brightness(1.55);transform:scale(.95)}
+@media (orientation:portrait){#mobile-hud:before{content:'Xoay ngang màn hình để chơi';position:absolute;inset:0;display:grid;place-items:center;background:#07141bdd;z-index:40;font-size:18px;letter-spacing:.08em}#mobile-hud>*{visibility:hidden}}

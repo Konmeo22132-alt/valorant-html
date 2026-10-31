@@ -1,0 +1,28 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict'),{JSDOM}=require('./node_modules/jsdom');
+const root=path.resolve(__dirname,'../val-strike-html'),dom=new JSDOM('<div id="loading-overlay"></div><div id="match-status"></div><button id="practice-refill"></button>',{runScripts:'outside-only',url:'http://localhost/game/game.html?map=abyss&mode=unrated'}),w=dom.window;
+w.GAME_CONFIG={match:JSON.parse(fs.readFileSync(path.join(root,'game/config/match.json'))),'playable-agents':JSON.parse(fs.readFileSync(path.join(root,'game/config/playable-agents.json')))};
+let now=0,interval,delayed=[],presented=0,started=null,fullscreenAllowed=false,profile={name:'Bạn',agent:'Clove'};Object.defineProperty(w.performance,'now',{value:()=>now});
+w.setInterval=fn=>{interval=fn;return 1;};w.clearInterval=()=>{};w.setTimeout=(fn,ms)=>{delayed.push({fn,ms});return delayed.length;};
+w.VSProfile={load:()=>profile,save:value=>{profile={...profile,...value};}};w.VSAgentViewer=()=>({load(){},dispose(){}});
+w.MAP_MODE='abyss';w.selectGameMap=id=>w.MAP_MODE=id;w.CONFIG_READY=new Promise(()=>{});w.initEngine=async()=>{};w.initPlayer=()=>{};w.playerController={presentGame(){presented++;},async startFullscreen(){return fullscreenAllowed;}};w.agentState={visualReady:true};w.scene={whenReadyAsync:async()=>{}};w.matchState={active:false};w.matchStart=async(mode,roster)=>{started={mode,roster};w.matchState.active=true;};w.uiAbilityLabel=(slot,name)=>name+' '+slot;
+const run=s=>vm.runInContext(s,dom.getInternalVMContext());for(const file of ['js/agents.js','game/maps.js','game/entry-flow.js'])run(fs.readFileSync(path.join(root,file),'utf8'));
+const flush=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
+(async()=>{
+ await w.GameEntry.start();assert.equal(w.GameEntry.phase,'selection');assert(w.document.querySelector('#entry-model-canvas'));assert(w.document.querySelectorAll('[data-entry-agent]').length>20);
+ w.document.querySelector('[data-entry-agent="Raze"]').click();assert.equal(w.document.querySelector('#entry-lock').hidden,true,'locked agents have no lock-in button');
+ assert(w.document.querySelector('.entry-picks .entry-agent-heading'),'agent name is in the picks column, outside the model');
+ now=20000;interval();assert.equal(w.document.querySelectorAll('#entry-allies img').length,5,'bot choices appear before the human locks');
+ assert(w.document.querySelector('#entry-allies .is-locked'),'completed bot choices show their locked state');
+ const available=['Clove','Jett','Sage'].find(name=>!w.document.querySelector('[data-entry-agent="'+name+'"] .entry-agent-full'));
+ w.document.querySelector('[data-entry-agent="'+available+'"]').click();
+ w.document.querySelector('#entry-lock').click();await flush();assert(w.document.querySelector('#entry-lock').disabled);assert.equal(profile.agent,available);
+ now=20000;interval();assert.equal(w.GameEntry.phase,'selection','locking early still waits for selection deadline');assert.equal(w.document.querySelectorAll('#entry-allies img').length,5,'bots gradually select');
+ now=90001;interval();assert.equal(w.GameEntry.phase,'reveal');assert.equal(w.document.querySelectorAll('.entry-lineup.enemy .entry-player').length,5,'enemy lineup revealed only after deadline');assert.equal(delayed[0].ms,4000);
+ delayed[0].fn();await flush();assert.equal(w.GameEntry.phase,'ready');assert.equal(presented,0);assert(!w.document.querySelector('#entry-shell').hidden);assert.equal(w.document.querySelector('.entry-loading-track').getAttribute('aria-valuenow'),'100');
+ await w.GameEntry.complete();assert.equal(w.document.querySelectorAll('.entry-enter').length,1,'repeated network completion does not duplicate the gate');
+ w.document.querySelector('.entry-enter').click();await flush();assert.equal(w.GameEntry.phase,'ready','denied fullscreen stays at the completed loader');assert.equal(presented,0);assert.equal(w.document.querySelector('.entry-enter').disabled,false);
+ fullscreenAllowed=true;w.document.querySelector('.entry-enter').click();await flush();assert.equal(w.GameEntry.phase,'playing');assert.equal(presented,1);assert(w.document.querySelector('#entry-shell').hidden);assert.equal(w.document.querySelector('#loading-overlay').style.display,'none');
+ for(const team of ['a','b'])for(const agent of ['Clove','Jett','Sage'])assert(started.roster.filter(p=>p.team===team&&p.agent===agent).length<=2);
+ dom.window.close();console.log('PASS production bot entry: animated preview mount, locked agents, lock-in, gradual bots, timer, enemy reveal, loading, gameplay handoff and max-two copies.');
+})().catch(error=>{console.error(error.stack);dom.window.close();process.exitCode=1;});
